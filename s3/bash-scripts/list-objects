@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "== list objects"
+
+# Check for bucket
+if [ -z "$1" ]; then
+    echo "There needs to be a bucket name e.g ./create-bucket --bucket my-bucket-name"
+    exit 1
+fi

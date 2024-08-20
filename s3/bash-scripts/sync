@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Exit immediately if any commanmds returns a non-zero status
+set -e
+
+# Check for bucket
+if [ -z "$1" ]; then
+    echo "There needs to be a bucket name e.g ./create-bucket --bucket my-bucket-name"
+    exit 1
+fi
+
+BUCKET_NAME=$1
+
+if [ -z "$2" ]; then
+    echo "There needs to be a filename prefix"
+    exit 1
+fi
+
+FILENAME_PREFIX=$2
+
+# Where we'll store the files
+OUTPUT_DIR="/tmp/s3-bash-scripts"
+
+rm -r $OUTPUT_DIR
+
+# Create output directory
+mkdir -p $OUTPUT_DIR
+
+# Generate a number number from 5-10
+NUM_FILES=$((RANDOM % 6 + 5))
+
+for ((i=i; i<=NUM_FILES; i++)); do
+    FILENAME="$OUTPUT_DIR/${FILENAME_PREFIX}_$i.txt"
+
+    dd if=/dev/urandom of="$FILENAME" bs=1024 count=$((RANDOM % 1024 + 1)) 2>/dev/null
+done
+
+tree $OUTPUT_DIR
+
+aws s3 sync $OUTPUT_DIR s3://$BUCKET_NAME/files

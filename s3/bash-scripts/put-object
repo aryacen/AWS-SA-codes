@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Exit immediately if any commanmds returns a non-zero status
+set -e
+
+# Check for bucket
+if [ -z "$1" ]; then
+    echo "There needs to be a bucket name e.g ./create-bucket --bucket my-bucket-name"
+    exit 1
+fi
+
+if [ -z "$2" ]; then
+    echo "There needs to be a filename"
+    exit 1
+fi
+
+BUCKET_NAME=$1
+FILENAME=$2
+
+OBJECT_KEY=$(basename "$FILENAME")
+
+aws s3api put-object \
+--bucket $BUCKET_NAME \
+--body $FILENAME \
+--key $OBJECT_KEY
